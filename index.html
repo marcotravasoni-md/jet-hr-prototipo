@@ -354,6 +354,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const calculateBtn = document.getElementById('calculate-btn');
   const copyBtn = document.getElementById('copy-btn');
   let currentSummaryText = "";
+
+  // Addizionale regionale Lombardia 2024 - aliquote progressive per scaglioni
+  // (0-15k: 1,23% | 15k-28k: 1,58% | 28k-50k: 1,72% | oltre 50k: 1,73%)
+  function calcolaAddRegionale(imponibile) {
+    if (imponibile <= 15000) {
+      return imponibile * 0.0123;
+    } else if (imponibile <= 28000) {
+      return (15000 * 0.0123) + ((imponibile - 15000) * 0.0158);
+    } else if (imponibile <= 50000) {
+      return (15000 * 0.0123) + (13000 * 0.0158) + ((imponibile - 28000) * 0.0172);
+    } else {
+      return (15000 * 0.0123) + (13000 * 0.0158) + (22000 * 0.0172) + ((imponibile - 50000) * 0.0173);
+    }
+  }
   
   if (calculateBtn) {
     calculateBtn.addEventListener('click', () => {
@@ -382,8 +396,8 @@ document.addEventListener("DOMContentLoaded", () => {
       
       if (detrazioni > irpefLorda) detrazioni = irpefLorda;
       
-      const addRegionale = imponibile * 0.0158;
-      const addComunale = imponibile <= 21000 ? 0 : imponibile * 0.008;
+      const addRegionale = calcolaAddRegionale(imponibile);
+      const addComunale = imponibile <= 23000 ? 0 : imponibile * 0.008;
       
       const tasseTotali = inps + (irpefLorda - detrazioni) + addRegionale + addComunale;
       const nettoAnnuale = ral - tasseTotali;
@@ -441,9 +455,9 @@ Totale Trattenute e Tasse: ${formatCur(tasseTotali)} (${pctTasse}%)`;
     copyBtn.addEventListener('click', () => {
       if (currentSummaryText) {
         navigator.clipboard.writeText(currentSummaryText).then(() => {
-          copyBtn.textContent = "Copiato negli Appunti!";
+          copyBtn.textContent = "✅ Copiato negli Appunti!";
           setTimeout(() => {
-            copyBtn.textContent = "Copia Riepilogo Simulazione";
+            copyBtn.textContent = "📋 Copia Riepilogo Simulazione";
           }, 2500);
         });
       }
