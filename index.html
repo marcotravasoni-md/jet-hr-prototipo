@@ -441,9 +441,9 @@ Totale Trattenute e Tasse: ${formatCur(tasseTotali)} (${pctTasse}%)`;
     copyBtn.addEventListener('click', () => {
       if (currentSummaryText) {
         navigator.clipboard.writeText(currentSummaryText).then(() => {
-          copyBtn.textContent = "✅ Copiato negli Appunti!";
+          copyBtn.textContent = "Copiato negli Appunti!";
           setTimeout(() => {
-            copyBtn.textContent = "📋 Copia Riepilogo Simulazione";
+            copyBtn.textContent = "Copia Riepilogo Simulazione";
           }, 2500);
         });
       }
